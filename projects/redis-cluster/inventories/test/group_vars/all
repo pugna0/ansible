@@ -1,0 +1,7 @@
+---
+# global variables for this entire inventory
+
+# authentication
+redis_version: 3.2.11
+redis_requirepass: yes
+redis_pass: YUZuW&jaQux2

@@ -1,0 +1,14 @@
+---
+# main
+
+- name: "System performance tuning for redis"
+  include_tasks: "tuning.yml"
+
+- name: "Install redis"
+  include_tasks: "redis.yml"
+
+- name: "Start up Redis Node self"
+  include_tasks: "startup-node.yml"
+
+- name: "Start up Redis Cluster"
+  include_tasks: "startup-cluster.yml"

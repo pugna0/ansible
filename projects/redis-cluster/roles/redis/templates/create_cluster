@@ -1,0 +1,6 @@
+# cluster setup template
+{{ redis_root_directory }}/bin/redis-trib.rb create --replicas 1 --password "{{ redis_pass }}" \
+{% for host in ansible_play_hosts -%}
+{{ host }}:7000 {{ host }}:7001
+{%- if not loop.last %} {% endif -%}
+{%- endfor -%}_

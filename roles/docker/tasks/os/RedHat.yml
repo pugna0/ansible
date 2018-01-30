@@ -1,0 +1,13 @@
+---
+
+- name: ensure docker dependencies are installed
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - ca-certificates
+
+- name: Clean yum cache
+  command: yum clean all
+  when: ansible_env.ANSIBLE_CONTAINER is defined

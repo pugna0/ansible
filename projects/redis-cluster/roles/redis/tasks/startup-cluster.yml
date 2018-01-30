@@ -1,0 +1,10 @@
+---
+# Start up cluster through ruby script
+- name: "Build redis-trib.rb command"
+  template: src=../templates/create_cluster dest={{ redis_root_directory }}/bin mode=0755
+
+
+- name: "Start up redis-cluster"
+  command: "{{ redis_root_directory }}/bin/create_cluster"
+  become: true
+  run_once: true

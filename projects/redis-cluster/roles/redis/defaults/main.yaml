@@ -1,0 +1,44 @@
+---
+# common
+redis_version: 3.2.11
+redis_bind_address: "0.0.0.0"
+redis_database_save_times:
+  - [900, 1]
+  - [300, 10]
+  - [60, 10000]
+
+# authentication
+redis_requirepass: no
+# redis_pass: inherated from group vars
+redis_pass: ""
+
+# log
+redis_syslog_enabled: "no"
+# Must be USER or between LOCAL0-LOCAL7.
+redis_syslog_facility: "local0"
+redis_root_directory: /data/redis
+
+# db file
+redis_dbfilename: redis.rdb
+
+# performance
+redis_max_clients: 10000
+redis_max_memory: 512mb
+redis_maxmemory_policy: volatile-lru
+redis_appendfsync: everysec
+# check https://www.kernel.org/doc/Documentation/sysctl/vm.txt
+# and http://redis.io/topics/faq
+redis_overcommit_memory: 1
+
+# replication
+redis_role: not-slave # just not "slave"
+# If role is slave set these values too
+# redis_master_ip: 1.1.1.1
+# redis_master_port: 6379
+redis_master_auth: None
+
+# default system performance tuning configuration
+redis_ulimit: 65536
+sysctl_vm_swappiness: true
+sysctl_vm_overcommit_memory: true
+redis_transparent_hugepage: true

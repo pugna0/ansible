@@ -1,0 +1,10 @@
+---
+
+- hosts: redis_testing
+  # should sequentially run commands
+  tags: redis-cluster
+  serial: 1
+  roles:
+    - common
+    - redis
+    - monitor

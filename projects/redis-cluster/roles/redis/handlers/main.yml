@@ -1,0 +1,3 @@
+---
+# As a review, handlers are only fired when certain tasks report changes, and are run at the end of each play
+

@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  author: pugna bojian@finupgroup.com
+  description: Install and configure redis, also within monitoring.
+  company: Finup
+  min_ansible_version: 2.4.2.0
+  platforms:
+
+    - name: Centos/RHEL
+      versions:
+        - 7
+  categories:
+    - redis
+dependencies: []

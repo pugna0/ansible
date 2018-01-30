@@ -1,0 +1,11 @@
+---
+# Startup Cluster Node self
+- name: "Start up Redis Server listened on 7000"
+  command: /data/redis/bin/redis-server /data/redis/conf/redis-cluster-7000.conf
+  become: true
+
+- name: "Start up Redis Server listened on 7001"
+  command: /data/redis/bin/redis-server /data/redis/conf/redis-cluster-7001.conf
+  become: true
+
+

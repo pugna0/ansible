@@ -1,0 +1,34 @@
+---
+# performance tuning for redis
+- name: "Sysctl vm.swappiness"
+  sysctl:
+    name: vm.swappiness
+    value: 0
+    reload: true
+    state: present
+  when: sysctl_vm_swappiness
+
+- name: "Sysctl vm.overcommit_memory"
+  sysctl:
+    name: vm.overcommit_memory
+    value: 1
+    reload: true
+    state: present
+  when: sysctl_vm_overcommit_memory
+
+- name: "Diable transparent_hugepage"
+  shell: "echo never > {{ item }}"
+  with_items:
+    - /sys/kernel/mm/transparent_hugepage/enabled
+    - /sys/kernel/mm/transparent_hugepage/defrag
+
+- name: "Configure rc.local for memory usage policy"
+  lineinfile:
+    dest: /etc/rc.local
+    regexp: "{{ item | regex_escape() }}"
+    line: "{{ item }}"
+    state: present
+  with_items:
+    - "sysctl -w net.core.somaxconn={{redis_ulimit}}"
+    - "echo never > /sys/kernel/mm/transparent_hugepage/enabled"
+    - "echo never > /sys/kernel/mm/transparent_hugepage/defrag"

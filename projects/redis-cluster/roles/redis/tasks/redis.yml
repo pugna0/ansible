@@ -1,0 +1,78 @@
+---
+# task for redis installation and configurations
+
+- name: "Be sure ruby is installed"
+  yum: name=ruby state=installed
+  tags: ruby
+
+- name: "Be sure tcl is installed"
+  yum: name=tcl state=installed
+  tags: tcl
+
+- name: "Installing ruby redis library"
+  gem: 
+    name: redis
+    version: 3.2
+    state: present
+
+- name: "Checking folders"
+  stat:
+    path: "{{ item }}"
+  register: folder_stats
+  with_items:
+  - ["{{redis_root_directory}}/bin/", "{{redis_root_directory}}/conf/", "{{redis_root_directory}}/log/7000/", "{{redis_root_directory}}/db-7000", "{{redis_root_directory}}/log/7001/", "{{redis_root_directory}}/db-7001"]
+
+- name: "Creating folders"
+  file:
+    path: "{{ item.item }}"
+    state: directory
+  when: item.stat.exists == false
+  with_items:
+  - "{{folder_stats.results}}"
+
+- name: Extract redis-{{redis_version}}.tar.gz into /tmp
+  unarchive:
+    src: "http://download.redis.io/releases/redis-{{redis_version}}.tar.gz"
+    dest: "/tmp/"
+    remote_src: yes
+
+- name: "Compiling {{redis_version}}"
+  command: /usr/bin/make
+  args:
+    chdir: "/tmp/redis-{{redis_version}}"
+  register: is_compiling_succeed
+
+- name: "Installing {{redis_version}}"
+  command: /usr/bin/make install
+  args:
+    chdir: "/tmp/redis-{{redis_version}}"
+  register: is_redis_installed
+
+# copy binary files
+- copy:
+    src: "redis-trib.rb"
+    dest: "/data/redis/bin/redis-trib.rb"
+    mode: 0755
+
+- copy:
+    src: "/tmp/redis-{{redis_version }}/src/redis-server"
+    dest: "/data/redis/bin/redis-server"
+    remote_src: yes
+    mode: 0755
+
+- copy:
+    src: "/tmp/redis-{{redis_version }}/src/redis-cli"
+    dest: "/data/redis/bin/redis-cli"
+    remote_src: yes
+    mode: 0755
+
+- copy:
+    src: "/tmp/redis-{{redis_version }}/src/redis-check-aof"
+    dest: "/data/redis/bin/redis-check-aof"
+    remote_src: yes
+    mode: 0755
+
+- name: copy redis-cluster configuration file
+  template: src={{item}} dest=/data/redis/conf/{{ item | basename | regex_replace('\.j2','') }}
+  with_fileglob:
+    - ../templates/*.j2
